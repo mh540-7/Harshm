@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>London Coffee ☕</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+  <style>
+    /* ===== VARIABLES ===== */
+    :root {
+      --espresso: #1a0f08;
+      --dark:     #2c1a0e;
+      --mocha:    #4a2c1a;
+      --caramel:  #8b5e3c;
+      --latte:    #c4936a;
+      --cream:    #f5ede0;
+      --milk:     #fdf8f2;
+      --gold:     #c9973a;
+      --gold2:    #e8b96a;
+      --white:    #ffffff;
+      --gray:     #9a8878;
+      --border:   rgba(196,147,106,0.2);
+    }
+
+    /* ===== RESET ===== */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--milk); color: var(--espresso); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: var(--caramel); }
+
+    /* ===== NAVBAR ===== */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 3rem;
+      background: rgba(26,15,8,0.97);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(201,151,58,0.15);
+    }
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem; font-weight: 700;
+      color: var(--gold2); letter-spacing: 2px; text-decoration: none;
+    }
+    .logo span { color: #fff; font-style: italic; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: rgba(245,237,224,0.65);
+      font-size: 0.75rem; font-weight: 500;
+      letter-spacing: 2px; text-transform: uppercase; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold2); }
+    .nav-btn {
+      background: var(--gold); color: var(--espresso);
+      padding: 0.5rem 1.4rem; border: none; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-weight: 700;
+      font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover { background: var(--gold2); }
+    /* Hamburger */
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; }
+    .hamburger span { width: 22px; height: 2px; background: var(--gold2); display: block; transition: all 0.3s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .mobile-menu {
+      display: none; position: fixed; top: 64px; left: 0; right: 0;
+      background: var(--espresso); padding: 1.5rem 2rem;
+      flex-direction: column; gap: 1.2rem; z-index: 999;
+      border-bottom: 1px solid var(--border);
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      color: var(--cream); text-decoration: none;
+      font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase;
+      padding-bottom: 0.8rem; border-bottom: 1px solid var(--border);
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; position: relative; overflow: hidden;
+      padding: 7rem 2rem 4rem;
+      background:
+        linear-gradient(to bottom, rgba(26,15,8,0.88) 0%, rgba(26,15,8,0.70) 50%, rgba(26,15,8,0.92) 100%),
+        url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1600&q=80') center/cover no-repeat;
+    }
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle at 2px 2px, rgba(201,151,58,0.07) 1px, transparent 0);
+      background-size: 30px 30px;
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 680px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.8rem;
+      color: var(--gold); font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 4px; text-transform: uppercase; margin-bottom: 1.5rem;
+      animation: fadeUp 0.8s 0.1s ease both;
+    }
+    .hero-badge::before, .hero-badge::after { content: ''; width: 30px; height: 1px; background: var(--gold); opacity: 0.5; }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.2rem, 9vw, 6rem);
+      font-weight: 700; color: var(--cream); line-height: 1.0;
+      animation: fadeUp 0.8s 0.25s ease both;
+    }
+    .hero h1 em { font-style: italic; color: var(--gold2); display: block; font-size: 0.65em; font-weight: 400; margin-top: 0.3rem; }
+    .hero-tag { color: rgba(245,237,224,0.6); font-size: 1rem; margin-top: 1rem; line-height: 1.7; animation: fadeUp 0.8s 0.4s ease both; }
+    .hero-cta {
+      display: inline-block; margin-top: 2.5rem;
+      background: var(--gold); color: var(--espresso);
+      padding: 1rem 2.8rem; border: none; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-weight: 700;
+      font-size: 0.82rem; letter-spacing: 3px; text-transform: uppercase;
+      text-decoration: none; transition: all 0.3s;
+      animation: fadeUp 0.8s 0.55s ease both;
+    }
+    .hero-cta:hover { background: var(--gold2); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(201,151,58,0.35); }
+
+    /* Scroll arrow */
+    .scroll-arrow {
+      position: absolute; bottom: 2rem; left: 50%;
+      transform: translateX(-50%);
+      color: rgba(201,151,58,0.4); font-size: 1.4rem;
+      animation: bounce 2s infinite;
+    }
+    @keyframes bounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+
+    /* ===== SECTION SHARED ===== */
+    section { padding: 5.5rem 3rem; }
+    .section-label {
+      display: flex; align-items: center; gap: 0.8rem;
+      color: var(--caramel); font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 4px; text-transform: uppercase; margin-bottom: 0.8rem;
+    }
+    .section-label::after { content: ''; width: 40px; height: 1px; background: var(--border); }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700; color: var(--espresso); line-height: 1.1;
+    }
+    .section-title em { font-style: italic; color: var(--caramel); }
+    .section-sub { margin-top: 0.7rem; color: var(--gray); font-size: 0.92rem; line-height: 1.8; }
+
+    /* Reveal animation on scroll */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ===== MENU SECTION ===== */
+    #menu { background: var(--milk); }
+    .menu-header { margin-bottom: 3rem; }
+
+    /* Filter Tabs */
+    .menu-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.8rem; }
+    .tab-btn {
+      padding: 0.45rem 1.2rem; border: 1px solid var(--border);
+      background: transparent; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 0.72rem;
+      font-weight: 500; letter-spacing: 1px; color: var(--gray);
+      transition: all 0.2s;
+    }
+    .tab-btn:hover, .tab-btn.active { background: var(--espresso); color: var(--gold2); border-color: var(--espresso); }
+
+    /* Menu Grid */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.4rem; margin-top: 2.5rem;
+    }
+    .menu-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      padding: 1.8rem 1.6rem;
+      position: relative; overflow: hidden;
+      transition: all 0.3s ease; cursor: default;
+    }
+    .menu-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--gold), var(--gold2));
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .menu-card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(26,15,8,0.12); border-color: rgba(201,151,58,0.3); }
+    .menu-card:hover::before { transform: scaleX(1); }
+    .menu-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+    .menu-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 700; color: var(--espresso); }
+    .menu-card p { font-size: 0.78rem; color: var(--gray); margin-top: 0.4rem; line-height: 1.6; }
+    .menu-badge {
+      position: absolute; top: 1rem; right: 1rem;
+      background: var(--cream); color: var(--caramel);
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; padding: 0.2rem 0.6rem;
+    }
+
+    /* ===== PRICING SECTION ===== */
+    #pricing { background: var(--espresso); }
+    #pricing .section-title { color: var(--cream); }
+    #pricing .section-label { color: var(--gold); }
+    #pricing .section-sub { color: rgba(245,237,224,0.5); }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem; margin-top: 3rem;
+    }
+    .pricing-card {
+      border: 1px solid rgba(201,151,58,0.2);
+      padding: 2.5rem 2rem;
+      position: relative; overflow: hidden;
+      background: rgba(255,255,255,0.03);
+      transition: all 0.3s ease;
+    }
+    .pricing-card.featured {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+    .pricing-card:hover { transform: translateY(-6px); border-color: var(--gold); }
+    .pricing-card.featured:hover { transform: translateY(-6px); }
+    .plan-name {
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 1rem;
+    }
+    .pricing-card.featured .plan-name { color: var(--espresso); }
+    .plan-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem; font-weight: 700;
+      color: var(--cream); line-height: 1;
+    }
+    .pricing-card.featured .plan-price { color: var(--espresso); }
+    .plan-price span { font-size: 1.2rem; vertical-align: super; }
+    .plan-price sub { font-size: 0.9rem; font-family: 'DM Sans', sans-serif; font-weight: 400; color: rgba(245,237,224,0.5); }
+    .pricing-card.featured .plan-price sub { color: rgba(26,15,8,0.5); }
+    .plan-desc { font-size: 0.82rem; color: rgba(245,237,224,0.5); margin: 0.6rem 0 1.5rem; }
+    .pricing-card.featured .plan-desc { color: rgba(26,15,8,0.6); }
+    .plan-items { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 2rem; }
+    .plan-items li { font-size: 0.82rem; color: rgba(245,237,224,0.7); display: flex; align-items: center; gap: 0.6rem; }
+    .pricing-card.featured .plan-items li { color: var(--espresso); }
+    .plan-items li::before { content: '✓'; color: var(--gold); font-weight: 700; }
+    .pricing-card.featured .plan-items li::before { color: var(--espresso); }
+    .plan-btn {
+      width: 100%; padding: 0.85rem; border: 1px solid rgba(201,151,58,0.4);
+      background: transparent; color: var(--cream); cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-weight: 700;
+      font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .plan-btn:hover { background: var(--gold); border-color: var(--gold); color: var(--espresso); }
+    .pricing-card.featured .plan-btn {
+      background: var(--espresso); border-color: var(--espresso); color: var(--cream);
+    }
+    .pricing-card.featured .plan-btn:hover { background: var(--dark); }
+    .popular-tag {
+      position: absolute; top: 1.2rem; right: 1.2rem;
+      background: var(--espresso); color: var(--gold2);
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; padding: 0.25rem 0.7rem;
+    }
+
+    /* ===== BOOKING SECTION ===== */
+    #booking { background: var(--cream); }
+    .booking-wrapper {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+      align-items: start; margin-top: 3rem;
+    }
+    .booking-info h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem; font-weight: 700;
+      color: var(--espresso); margin-bottom: 1rem;
+    }
+    .booking-info p { color: var(--gray); font-size: 0.88rem; line-height: 1.8; }
+    .booking-perks { margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem; }
+    .perk { display: flex; align-items: flex-start; gap: 0.8rem; }
+    .perk-icon { font-size: 1.2rem; flex-shrink: 0; }
+    .perk-text h4 { font-size: 0.85rem; font-weight: 600; color: var(--espresso); }
+    .perk-text p { font-size: 0.78rem; color: var(--gray); margin-top: 0.2rem; }
+
+    /* Form */
+    .booking-form { display: flex; flex-direction: column; gap: 1rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group label { font-size: 0.72rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--caramel); }
+    .form-group input, .form-group select {
+      background: var(--white); border: 1px solid var(--border);
+      padding: 0.85rem 1rem; color: var(--espresso);
+      font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+      outline: none; transition: border 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--gold); }
+    .form-group input::placeholder { color: var(--gray); font-size: 0.82rem; }
+    .submit-btn {
+      background: var(--espresso); color: var(--cream);
+      padding: 1rem; border: none; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-weight: 700;
+      font-size: 0.82rem; letter-spacing: 2px; text-transform: uppercase;
+      transition: all 0.2s; margin-top: 0.5rem;
+    }
+    .submit-btn:hover { background: var(--mocha); transform: translateY(-2px); }
+
+    /* Success message */
+    .success-msg {
+      display: none;
+      background: #f0fdf4; border: 1px solid #86efac;
+      padding: 1rem 1.5rem; color: #166534;
+      font-size: 0.88rem; font-weight: 500;
+      align-items: center; gap: 0.6rem;
+    }
+    .success-msg.show { display: flex; }
+
+    /* ===== CONTACT SECTION ===== */
+    #contact { background: var(--milk); }
+    .contact-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
+      margin-top: 3rem;
+    }
+    .contact-info { display: flex; flex-direction: column; gap: 1.5rem; }
+    .contact-card {
+      display: flex; align-items: flex-start; gap: 1rem;
+      padding: 1.5rem; background: var(--white);
+      border: 1px solid var(--border); transition: all 0.2s;
+    }
+    .contact-card:hover { border-color: rgba(201,151,58,0.4); transform: translateX(4px); }
+    .contact-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .contact-card h4 { font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--caramel); margin-bottom: 0.3rem; }
+    .contact-card p, .contact-card a { font-size: 0.88rem; color: var(--espresso); line-height: 1.7; text-decoration: none; }
+    .contact-card a:hover { color: var(--gold); }
+
+    /* Map */
+    .map-container {
+      width: 100%; height: 380px;
+      border: 1px solid var(--border); overflow: hidden;
+      position: relative;
+    }
+    .map-container iframe { width: 100%; height: 100%; border: none; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--espresso); color: rgba(245,237,224,0.5);
+      text-align: center; padding: 2rem;
+      font-size: 0.78rem; letter-spacing: 1px;
+      border-top: 1px solid rgba(201,151,58,0.15);
+    }
+    footer strong { color: var(--gold2); }
+
+    /* ===== WHATSAPP BUTTON ===== */
+    .whatsapp-btn {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: #25D366; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; text-decoration: none;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      transition: all 0.3s; animation: wa-pulse 2s infinite;
+    }
+    .whatsapp-btn:hover { background: #128C7E; transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.5); }
+    @keyframes wa-pulse {
+      0%,100% { box-shadow: 0 4px 20px rgba(37,211,102,0.4); }
+      50%      { box-shadow: 0 4px 30px rgba(37,211,102,0.7); }
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links, .nav-btn { display: none; }
+      .hamburger { display: flex; }
+      section { padding: 4rem 1.5rem; }
+      .booking-wrapper, .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .menu-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; }
+      .pricing-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 2.8rem; }
+      .menu-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav>
+    <a href="#" class="logo">London <span>Coffee</span></a>
+    <ul class="nav-links">
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#booking">Booking</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="nav-btn" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">Reserve Table</button>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#menu"    onclick="closeMenu()">Menu</a>
+    <a href="#pricing" onclick="closeMenu()">Pricing</a>
+    <a href="#booking" onclick="closeMenu()">Booking</a>
+    <a href="#contact" onclick="closeMenu()">Contact</a>
+  </div>
+
+  <!-- ===== HERO SECTION ===== -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <div class="hero-badge">Since 2020 · Mumbai's Finest</div>
+      <h1>London Coffee ☕<em>Best Coffee Experience in Mumbai</em></h1>
+      <p class="hero-tag">Crafted with love, served with elegance.<br/>Your perfect cup awaits.</p>
+      <a href="#menu" class="hero-cta">Explore Menu</a>
+    </div>
+    <div class="scroll-arrow">↓</div>
+  </section>
+
+  <!-- ===== MENU SECTION ===== -->
+  <section id="menu">
+    <div class="menu-header reveal">
+      <div class="section-label">Our Offerings</div>
+      <h2 class="section-title">Crafted <em>Menu</em></h2>
+      <p class="section-sub">Every item made fresh, every day — quality you can taste.</p>
+
+      <!-- Filter Tabs -->
+      <div class="menu-tabs">
+        <button class="tab-btn active" onclick="filterMenu('all', this)">All</button>
+        <button class="tab-btn" onclick="filterMenu('food', this)">Food</button>
+        <button class="tab-btn" onclick="filterMenu('hot', this)">Hot Drinks</button>
+        <button class="tab-btn" onclick="filterMenu('cold', this)">Cold Drinks</button>
+        <button class="tab-btn" onclick="filterMenu('special', this)">Specials</button>
+      </div>
+    </div>
+
+    <!-- Menu Cards -->
+    <div class="menu-grid" id="menuGrid">
+
+      <!-- FOOD ITEMS -->
+      <div class="menu-card reveal" data-cat="food">
+        <div class="menu-badge">Veg</div>
+        <div class="menu-icon">🥪</div>
+        <h3>Veg Sandwich</h3>
+        <p>Fresh veggies, cheese & herbs in toasted bread</p>
+      </div>
+
+      <div class="menu-card reveal" data-cat="food">
+        <div class="menu-badge">Non-Veg</div>
+        <div class="menu-icon">🥩</div>
+        <h3>Non Veg Sandwich</h3>
+        <p>Grilled chicken with mayo & fresh greens</p>
+      </div>
+
+      <div class="menu-card reveal" data-cat="food">
+        <div class="menu-badge">Snack</div>
+        <div class="menu-icon">🥐</div>
+        <h3>Puff</h3>
+        <p>Flaky golden puffs, veg & non-veg options</p>
+      </div>
+
+      <div class="menu-card reveal" data-cat="food">
+        <div class="menu-badge">Bakery</div>
+        <div class="menu-icon">🥐</div>
+        <h3>Croissants</h3>
+        <p>Butter-layered French croissants, baked fresh</p>
+      </div>
+
+      <div class="menu-card reveal" data-cat="food">
+        <div class="menu-badge">Sweet</div>
+        <div class="menu-icon">🍰</div>
+        <h3>Desserts</h3>
+        <p>Cakes, pastries & sweet treats to indulge</p>
+      </div>
+
+      <div class="menu-card reveal" data-cat="food">
+        <div class="menu-badge">Snack</div>
+        <div class="menu-icon">🌯</div>
+        <h3>Roll</h3>
+        <p>Stuffed rolls with paneer, chicken or veggies</p>
+      </div>
+
+      <div class="menu-card reveal" data-cat="food">
+        <div class="menu-badge">Meal</div>
+        <div class="menu-icon">🍝</div>
+        <h3>Pasta</h3>
+        <p>Creamy arrabbiata or white sauce pasta</p>
+      </div>
+
+      <!-- HOT DRINKS -->
+      <div class="menu-card reveal" data-cat="hot">
+        <div class="menu-badge">Hot</div>
+        <div class="menu-icon">🍵</div>
+        <h3>Hot Tea</h3>
+        <p>Masala, ginger, green & herbal teas</p>
+      </div>
+
+      <div class="menu-card reveal" data-cat="hot">
+        <div class="menu-badge">Hot</div>
+        <div class="menu-icon">☕</div>
+        <h3>Hot Beverages</h3>
+        <p>Cappuccino, latte, americano & more</p>
+      </div>
+
+      <!-- COLD DRINKS -->
+      <div class="menu-card reveal" data-cat="cold">
+        <div class="menu-badge">Cold</div>
+        <div class="menu-icon">🧊</div>
+        <h3>Iced Beverages</h3>
+        <p>Cold brew, iced coffee & chilled classics</p>
+      </div>
+
+      <div class="menu-card reveal" data-cat="cold">
+        <div class="menu-badge">Cold</div>
+        <div class="menu-icon">🍹</div>
+        <h3>Iced Tea</h3>
+        <p>Lemon, peach & passion fruit iced teas</p>
+      </div>
+
+      <div class="menu-card reveal" data-cat="cold">
+        <div class="menu-badge">Cold</div>
+        <div class="menu-icon">🥤</div>
+        <h3>Smoothies</h3>
+        <p>Mango, mixed berry & tropical blends</p>
+      </div>
+
+      <div class="menu-card reveal" data-cat="cold">
+        <div class="menu-badge">Cold</div>
+        <div class="menu-icon">🧋</div>
+        <h3>Frappuccino</h3>
+        <p>Mocha, caramel & vanilla fraps</p>
+      </div>
+
+      <!-- SPECIALS -->
+      <div class="menu-card reveal" data-cat="special">
+        <div class="menu-badge">⭐ Special</div>
+        <div class="menu-icon">☕</div>
+        <h3>Special Hot Beverages</h3>
+        <p>Signature London blends, crafted exclusively</p>
+      </div>
+
+      <div class="menu-card reveal" data-cat="special">
+        <div class="menu-badge">⭐ Special</div>
+        <div class="menu-icon">🥤</div>
+        <h3>Special Cold Beverages</h3>
+        <p>House recipe cold drinks you won't find elsewhere</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== PRICING SECTION ===== -->
+  <section id="pricing">
+    <div class="reveal">
+      <div class="section-label">Affordable Luxury</div>
+      <h2 class="section-title" style="color:var(--cream);">Our <em style="color:var(--gold2);">Pricing</em></h2>
+      <p class="section-sub">Premium quality at prices that make you smile.</p>
+    </div>
+
+    <div class="pricing-grid">
+
+      <div class="pricing-card reveal">
+        <div class="plan-name">Light Bites</div>
+        <div class="plan-price"><span>₹</span>99 <sub>– ₹149</sub></div>
+        <div class="plan-desc">Perfect for a quick snack break</div>
+        <ul class="plan-items">
+          <li>Veg / Non-Veg Sandwich</li>
+          <li>Puff & Croissants</li>
+          <li>Hot Tea</li>
+          <li>Iced Tea</li>
+        </ul>
+        <button class="plan-btn" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">Order Now</button>
+      </div>
+
+      <div class="pricing-card featured reveal">
+        <div class="popular-tag">Most Popular</div>
+        <div class="plan-name">Coffee Lover</div>
+        <div class="plan-price"><span>₹</span>199 <sub>– ₹299</sub></div>
+        <div class="plan-desc">The complete London Coffee experience</div>
+        <ul class="plan-items">
+          <li>All Hot & Cold Beverages</li>
+          <li>Frappuccino & Smoothies</li>
+          <li>Rolls & Pasta</li>
+          <li>Desserts</li>
+        </ul>
+        <button class="plan-btn" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">Order Now</button>
+      </div>
+
+      <div class="pricing-card reveal">
+        <div class="plan-name">Premium</div>
+        <div class="plan-price"><span>₹</span>299 <sub>– ₹399</sub></div>
+        <div class="plan-desc">Exclusive specials & signature items</div>
+        <ul class="plan-items">
+          <li>Special Hot Beverages</li>
+          <li>Special Cold Beverages</li>
+          <li>Full Meal Combo</li>
+          <li>Priority Service</li>
+        </ul>
+        <button class="plan-btn" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">Order Now</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== BOOKING SECTION ===== -->
+  <section id="booking">
+    <div class="booking-wrapper">
+
+      <!-- Left Info -->
+      <div class="booking-info reveal">
+        <div class="section-label">Reserve Your Spot</div>
+        <h2 class="section-title">Book a <em>Table</em></h2>
+        <p class="section-sub">Enjoy a relaxed coffee experience. Reserve your table and we'll have everything ready for you.</p>
+        <div class="booking-perks">
+          <div class="perk">
+            <div class="perk-icon">☕</div>
+            <div class="perk-text">
+              <h4>Complimentary Welcome Coffee</h4>
+              <p>Get a free coffee shot with every table booking</p>
+            </div>
+          </div>
+          <div class="perk">
+            <div class="perk-icon">🎂</div>
+            <div class="perk-text">
+              <h4>Special Occasion Setup</h4>
+              <p>We decorate for birthdays & anniversaries</p>
+            </div>
+          </div>
+          <div class="perk">
+            <div class="perk-icon">📞</div>
+            <div class="perk-text">
+              <h4>Confirmation Call</h4>
+              <p>We call you 1 hour before your booking time</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Form -->
+      <div class="reveal">
+        <div class="success-msg" id="successMsg">
+          ✅ &nbsp; Booking confirmed! We'll call you soon. Thank you!
+        </div>
+        <form class="booking-form" onsubmit="submitForm(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Your Name</label>
+              <input type="text" placeholder="Enter your name" required />
+            </div>
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input type="tel" placeholder="10-digit number" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" required />
+            </div>
+            <div class="form-group">
+              <label>Number of People</label>
+              <select required>
+                <option value="">Select</option>
+                <option>1 Person</option>
+                <option>2 People</option>
+                <option>3 People</option>
+                <option>4 People</option>
+                <option>5+ People</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="submit-btn">Confirm Booking →</button>
+        </form>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== CONTACT SECTION ===== -->
+  <section id="contact">
+    <div class="reveal">
+      <div class="section-label">Get In Touch</div>
+      <h2 class="section-title">Visit <em>Us</em></h2>
+      <p class="section-sub">We'd love to see you. Here's how to find us.</p>
+    </div>
+
+    <div class="contact-grid">
+
+      <!-- Contact Cards -->
+      <div class="contact-info">
+        <div class="contact-card reveal">
+          <div class="contact-icon">📞</div>
+          <div>
+            <h4>Phone</h4>
+            <a href="tel:+918424832663">084248 32663</a>
+          </div>
+        </div>
+        <div class="contact-card reveal">
+          <div class="contact-icon">📍</div>
+          <div>
+            <h4>Address</h4>
+            <p>Shop No. C-19, Eastern Business District Premises,<br/>
+            Lal Bahadur Shastri Marg, Ganesh Nagar,<br/>
+            Bhandup West, Mumbai, Maharashtra 400078</p>
+          </div>
+        </div>
+        <div class="contact-card reveal">
+          <div class="contact-icon">🕐</div>
+          <div>
+            <h4>Opening Hours</h4>
+            <p>Mon – Fri: 8:00 AM – 10:00 PM<br/>
+            Sat – Sun: 8:00 AM – 11:00 PM</p>
+          </div>
+        </div>
+        <div class="contact-card reveal">
+          <div class="contact-icon">💬</div>
+          <div>
+            <h4>WhatsApp</h4>
+            <a href="https://wa.me/918424832663" target="_blank">Chat with us on WhatsApp</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Google Map -->
+      <div class="map-container reveal">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3769.0!2d72.9!3d19.15!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sShop+No.+C-19+Eastern+Business+District+Lal+Bahadur+Shastri+Marg+Bhandup+West+Mumbai+400078!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+          allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <p>© 2024 <strong>London Coffee</strong> · Bhandup West, Mumbai · All rights reserved.</p>
+    <p style="margin-top:0.5rem;">Made with ☕ & ❤️ in Mumbai</p>
+  </footer>
+
+  <!-- ===== WHATSAPP FLOATING BUTTON ===== -->
+  <a href="https://wa.me/918424832663" target="_blank" class="whatsapp-btn" title="Chat on WhatsApp">
+    💬
+  </a>
+
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+
+    // ----- Mobile Menu Toggle -----
+    function toggleMenu() {
+      document.getElementById('hamburger').classList.toggle('open');
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+    function closeMenu() {
+      document.getElementById('hamburger').classList.remove('open');
+      document.getElementById('mobileMenu').classList.remove('open');
+    }
+
+    // ----- Menu Filter -----
+    function filterMenu(cat, btn) {
+      // Update active tab
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Show/hide cards
+      document.querySelectorAll('.menu-card').forEach(card => {
+        if (cat === 'all' || card.dataset.cat === cat) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // ----- Booking Form Submit -----
+    function submitForm(e) {
+      e.preventDefault();
+      const msg = document.getElementById('successMsg');
+      msg.classList.add('show');
+      e.target.reset();
+      // Scroll to success message
+      msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Hide after 6 seconds
+      setTimeout(() => msg.classList.remove('show'), 6000);
+    }
+
+    // ----- Scroll Reveal Animation -----
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // ----- Navbar scroll shadow -----
+    window.addEventListener('scroll', () => {
+      const nav = document.querySelector('nav');
+      if (window.scrollY > 50) {
+        nav.style.boxShadow = '0 4px 30px rgba(26,15,8,0.5)';
+      } else {
+        nav.style.boxShadow = 'none';
+      }
+    });
+
+    // ----- Set min date for booking (today) -----
+    const dateInput = document.querySelector('input[type="date"]');
+    if (dateInput) {
+      const today = new Date().toISOString().split('T')[0];
+      dateInput.setAttribute('min', today);
+    }
+
+  </script>
+</body>
+</html>
